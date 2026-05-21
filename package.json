@@ -4,7 +4,7 @@
   "description": "A small CLI for installing Google Fonts on your machine.",
   "type": "module",
   "bin": {
-    "font": "./dist/cli.js"
+    "font": "dist/cli.js"
   },
   "files": [
     "dist",

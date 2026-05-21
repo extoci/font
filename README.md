@@ -9,7 +9,7 @@ this exists because google fonts should be installable from the terminal without
 install globally:
 
 ```sh
-npm install -g @extoci/font
+npm install -g @extoci/fonts
 ```
 
 then:
@@ -143,7 +143,7 @@ bun run test
 
 ## notes
 
-this is bun-first for development, but the published binary is a bundled node cli so `npm install -g @extoci/font` works normally.
+this is bun-first for development, but the published binary is a bundled node cli so `npm install -g @extoci/fonts` works normally.
 
 ## acknowledgements
 
