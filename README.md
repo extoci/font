@@ -1,4 +1,4 @@
-# fonts
+# font
 
 a tiny google fonts cli for installing fonts on your machine.
 
@@ -9,7 +9,7 @@ this exists because google fonts should be installable from the terminal without
 install globally:
 
 ```sh
-npm install -g @extoci/fonts
+npm install -g @extoci/font
 ```
 
 then:
@@ -143,7 +143,7 @@ bun run test
 
 ## notes
 
-this is bun-first for development, but the published binary is a bundled node cli so `npm install -g @extoci/fonts` works normally.
+this is bun-first for development, but the published binary is a bundled node cli so `npm install -g @extoci/font` works normally.
 
 ## acknowledgements
 
