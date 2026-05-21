@@ -1,0 +1,39 @@
+{
+  "name": "@extoci/fonts",
+  "version": "0.1.0",
+  "description": "A small CLI for installing Google Fonts on your machine.",
+  "type": "module",
+  "bin": {
+    "font": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bun build src/cli.ts --target=node --outdir=dist && tsc -p tsconfig.json --emitDeclarationOnly",
+    "dev": "bun run src/cli.ts",
+    "prepack": "bun run build",
+    "test": "bunx vitest run",
+    "type-check": "tsc -p tsconfig.json --noEmit"
+  },
+  "keywords": [
+    "google-fonts",
+    "fonts",
+    "cli"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.4"
+  },
+  "packageManager": "bun@1.2.15"
+}
