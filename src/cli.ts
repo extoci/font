@@ -135,8 +135,7 @@ async function findCommand(positionals: string[], options: Options): Promise<voi
       return;
     }
 
-    p.log.info(`${results.length} font${results.length === 1 ? '' : 's'}${limit && allResults.length > limit ? ` of ${allResults.length}` : ''}`);
-    for (const font of results) printFont(font);
+    printFindResults(results, { total: allResults.length, query, limited: Boolean(limit && allResults.length > limit) });
     return;
   }
 
@@ -152,7 +151,7 @@ async function findCommand(positionals: string[], options: Options): Promise<voi
   }
 
   const selected = await chooseFont(matches.slice(0, 50));
-  if (selected) printFont(selected);
+  if (selected) printFontBlock(selected);
 }
 
 async function listCommand(options: Options): Promise<void> {
@@ -321,10 +320,31 @@ function readFormat(options: Options): FontFormat {
   return options.woff2 ? 'woff2' : 'ttf';
 }
 
-function printFont(font: FontSummary): void {
-  console.log(`${pc.bold(font.family)} ${pc.dim(font.category ?? '')}`);
-  console.log(`  ${pc.dim('variants')} ${font.variants.join(', ')}`);
-  console.log(`  ${pc.dim('css')} https://fonts.googleapis.com/css?family=${font.family.replace(/\s+/g, '+')}`);
+function printFindResults(fonts: FontSummary[], meta: { total: number; query: string; limited: boolean }): void {
+  const shown = fonts.length;
+  const title = meta.query ? `Found ${shown}${meta.limited ? ` of ${meta.total}` : ''} for "${meta.query}"` : `Google Fonts catalog (${shown})`;
+  console.log();
+  console.log(`${pc.bold(title)}`);
+  console.log(pc.dim('─'.repeat(Math.min(process.stdout.columns || 80, 96))));
+  fonts.forEach((font, index) => printFontBlock(font, index === fonts.length - 1));
+}
+
+function printFontBlock(font: FontSummary, isLast = true): void {
+  const meta = [
+    font.category,
+    `${font.variants.length} variant${font.variants.length === 1 ? '' : 's'}`,
+    font.version,
+  ].filter(Boolean);
+  const css = `https://fonts.googleapis.com/css?family=${font.family.replace(/\s+/g, '+')}`;
+
+  console.log(`${pc.bold(font.family)} ${pc.dim(meta.join(' · '))}`);
+  const variantLines = wrapList(font.variants, terminalWidth() - 13);
+  variantLines.forEach((line, index) => {
+    const label = index === 0 ? pc.dim('variants') : '        ';
+    console.log(`  ${label} ${line}`);
+  });
+  console.log(`  ${pc.dim('css')}      ${pc.cyan(css)}`);
+  if (!isLast) console.log();
 }
 
 function printResults(results: InstalledFont[]): void {
@@ -375,4 +395,26 @@ ${pc.bold('Examples:')}
   font find --all
   font remove inter
 `);
+}
+
+function terminalWidth(): number {
+  return Math.max(60, Math.min(process.stdout.columns || 88, 120));
+}
+
+function wrapList(items: string[], width: number): string[] {
+  const lines: string[] = [];
+  let current = '';
+
+  for (const item of items) {
+    const next = current ? `${current}, ${item}` : item;
+    if (next.length > width && current) {
+      lines.push(current);
+      current = item;
+    } else {
+      current = next;
+    }
+  }
+
+  if (current) lines.push(current);
+  return lines.length ? lines : [''];
 }
